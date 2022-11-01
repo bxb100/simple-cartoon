@@ -1,1 +1,8 @@
+spring:
+  data:
+    rest:
+      base-path: /api
+    mongodb:
+      database: cartoon
+      uri: mongodb://localhost/cartoon
 

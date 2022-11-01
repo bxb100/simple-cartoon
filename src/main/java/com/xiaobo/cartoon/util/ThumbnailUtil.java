@@ -1,14 +1,13 @@
-package de.wasenweg.alfred.thumbnails;
-
-import lombok.extern.slf4j.Slf4j;
+package com.xiaobo.cartoon.util;
 
 import javax.imageio.ImageIO;
-
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public final class ThumbnailUtil {
