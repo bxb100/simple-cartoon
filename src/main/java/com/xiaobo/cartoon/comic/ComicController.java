@@ -1,5 +1,6 @@
 package com.xiaobo.cartoon.comic;
 
+import java.util.Dictionary;
 import java.util.List;
 
 import com.xiaobo.cartoon.volume.Volume;
@@ -30,7 +31,6 @@ public class ComicController {
 
 	@PostMapping
 	public Comic insert(@RequestBody Comic comic) {
-
 		return comicService.insert(comic);
 	}
 

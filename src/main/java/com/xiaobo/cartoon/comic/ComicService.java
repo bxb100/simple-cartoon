@@ -19,17 +19,20 @@ public class ComicService {
 	}
 
 	public List<Comic> findAll() {
-		return comicRepository.findAll();
+		return comicRepository.findAllByOrderByTitleAsc();
 	}
 
 	public void deleteById(String id) {
+		// delete all volume under this comic
+		volumeRepository.deleteAllByComicId(new ObjectId(id));
+
 		comicRepository.deleteById(id);
 	}
 
 	public Comic updateComic(Comic comic) {
 		// delete all volume under this comic
 		volumeRepository.deleteAllByComicId(new ObjectId(comic.getId()));
-		
+
 		return comicRepository.save(comic);
 	}
 }

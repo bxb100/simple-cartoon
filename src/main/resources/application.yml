@@ -5,4 +5,7 @@ spring:
     mongodb:
       database: cartoon
       uri: mongodb://localhost/cartoon
+      # https://stackoverflow.com/questions/49385130/spring-data-unique-field-in-mongodb-document
+      # the default index creation is turned off
+      auto-index-creation: true
 

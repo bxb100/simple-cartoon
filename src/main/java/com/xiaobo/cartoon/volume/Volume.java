@@ -2,6 +2,7 @@ package com.xiaobo.cartoon.volume;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -21,15 +22,14 @@ public class Volume {
 	private String nextId;
 	private String previousId;
 	private byte[] cover;
+
+	@JsonIgnore
 	@Indexed
 	private ObjectId comicId;
 
 	private boolean read;
 
 	private List<String> scannerErrors;
-
-	public Volume() {
-	}
 
 	public Volume(Integer currentPage) {
 		this.currentPage = currentPage;

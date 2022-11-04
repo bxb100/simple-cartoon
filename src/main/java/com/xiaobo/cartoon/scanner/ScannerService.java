@@ -37,7 +37,7 @@ public class ScannerService {
 	}
 
 	@Transactional
-	public void scan(String comicId) {
+	public int scan(String comicId) {
 
 		Comic comic = comicRepository.findById(comicId).orElseThrow();
 
@@ -54,11 +54,15 @@ public class ScannerService {
 					.toList();
 
 			// 3. persist into volume repo
+			comic.setScanned(true);
+			comic.setVolNum(volumes.size());
 			Comic save = comicRepository.save(comic);
 			List<Volume> associate = volumeService.associate(save, volumes);
 
 			// 4. clean orphan
 			volumeService.cleanUp(save, associate);
+
+			return associate.size();
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -69,8 +73,12 @@ public class ScannerService {
 		Volume volume = volumeRepository.findByPathAndComicId(path.toString(), new ObjectId(comicId))
 				.orElse(new Volume(0));
 
-		volume.setPath(path.toAbsolutePath().toString());
-		volume.setFileName(path.getFileName().toString());
+		if (volume.getId() == null) {
+			// ensure not to influence existed data
+			volume.setPath(path.toAbsolutePath().toString());
+			volume.setFileName(path.getFileName().toString());
+		}
+
 		if (volume.getCover() == null) {
 			try {
 				CompressionUtil.mapMetaData(volume);

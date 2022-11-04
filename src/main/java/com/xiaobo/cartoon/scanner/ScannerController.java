@@ -21,8 +21,8 @@ public class ScannerController {
 	private final ReplaceNameService replaceNameService;
 
 	@GetMapping("{comicId}")
-	public void startScan(@PathVariable String comicId) {
-		scannerService.scan(comicId);
+	public int startScan(@PathVariable String comicId) {
+		return scannerService.scan(comicId);
 	}
 
 	@PostMapping("{comicId}/rename")

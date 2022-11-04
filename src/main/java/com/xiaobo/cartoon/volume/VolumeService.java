@@ -32,6 +32,10 @@ public class VolumeService {
 		return volumeRepository.findAllByComicId(new ObjectId(comicId));
 	}
 
+	public Volume getById(String id) {
+		return volumeRepository.findById(id).orElseThrow();
+	}
+
 	public void deleteById(String id) {
 
 		volumeRepository.deleteById(id);
