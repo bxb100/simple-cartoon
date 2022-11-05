@@ -9,3 +9,12 @@ spring:
       # the default index creation is turned off
       auto-index-creation: true
 
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://mongodb/cartoon

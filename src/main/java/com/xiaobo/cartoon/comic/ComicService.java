@@ -6,6 +6,7 @@ import com.xiaobo.cartoon.volume.VolumeRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +30,17 @@ public class ComicService {
 		comicRepository.deleteById(id);
 	}
 
-	public Comic updateComic(Comic comic) {
-		// delete all volume under this comic
-		volumeRepository.deleteAllByComicId(new ObjectId(comic.getId()));
+	@Transactional
+	public Comic updateComic(String id, Comic comic) {
+		Comic save = comicRepository.findById(id).orElseThrow();
+		save.setTitle(comic.getTitle());
+		if (!save.getPath().equals(comic.getPath())) {
 
-		return comicRepository.save(comic);
+			// delete all volume under this comic
+			volumeRepository.deleteAllByComicId(new ObjectId(id));
+		}
+		save.setPath(comic.getPath());
+
+		return comicRepository.save(save);
 	}
 }

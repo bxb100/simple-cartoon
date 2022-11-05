@@ -39,10 +39,10 @@ public class ComicController {
 		comicService.deleteById(id);
 	}
 
-	@PutMapping
-	public Comic update(@RequestBody Comic comic) {
+	@PutMapping("{id}")
+	public Comic update(@PathVariable String id, @RequestBody Comic comic) {
 
-		return comicService.updateComic(comic);
+		return comicService.updateComic(id, comic);
 	}
 
 	@GetMapping("{id}/volume")

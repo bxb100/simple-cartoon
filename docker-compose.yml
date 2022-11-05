@@ -1,0 +1,23 @@
+version: '3'
+services:
+  cartoon:
+    depends_on:
+      - mongo
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATA_MONGODB_URI: mongodb://mongo/cartoon
+    volumes:
+      - /Users/xiaobo/Downloads:/cs
+  cartoon-ui:
+    build: ./cartoon-ui
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_HOST: http://192.168.31.127:8080
+      API_HOST: http://carton:8080
+  mongo:
+    image: "mongo:4.2"
+
