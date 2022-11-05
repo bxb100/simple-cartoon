@@ -6,7 +6,7 @@ services:
   cartoon:
     depends_on:
       - mongo
-    image: bxb100/cartoon:1.0.0
+    image: bxb100/cartoon
     ports:
       - "8088:8080"
     environment:
@@ -15,7 +15,7 @@ services:
     volumes:
       - /Volumes/ExtraDownload:/file
   cartoon-ui:
-    image: bxb100/cartoon-ui:1.0.1
+    image: bxb100/cartoon-ui
     ports:
       - "3000:3000"
     environment:
