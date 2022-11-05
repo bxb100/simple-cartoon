@@ -20,7 +20,7 @@ services:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_HOST: http://current-host-ip:8080
-      API_HOST: http://carton:8080
+      API_HOST: http://cartoon:8080
   mongo:
     image: "mongo:4.2"
 
