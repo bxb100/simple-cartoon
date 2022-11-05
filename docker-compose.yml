@@ -16,8 +16,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_HOST: http://192.168.31.127:8080
-      API_HOST: http://carton:8080
+      ENVIRONMENT_VAR: http://192.168.31.127:8080
+      API_HOST: http://cartoon:8080
   mongo:
     image: "mongo:4.2"
 
