@@ -15,7 +15,7 @@ public class Comic {
 
 	@NonNull
 	@Indexed(unique = true, background = true)
-	private String title;
+	private String caption;
 
 	@NonNull
 	private String path;

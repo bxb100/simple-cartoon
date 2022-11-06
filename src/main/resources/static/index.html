@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Villain</title>
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1"><meta name="keywords" content="villain, reader, comic, comic book, web"><meta content="website" property="og:type"><meta name="title" content="Villain" property="og:title"><meta name="description" content="The open source web-based comic book reader that you need, but don't deserve." property="og:description"><link href="style.css?608ce9cd7cfd13dfc332" rel="stylesheet"></head>
-  <body>
-  <script type="text/javascript" src="bundle.js?608ce9cd7cfd13dfc332"></script></body>
+<head>
+	<meta charset="UTF-8">
+	<title>Villain</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+	<meta name="keywords" content="villain, reader, comic, comic book, web">
+	<meta content="website" property="og:type">
+	<meta name="title" content="Villain" property="og:title">
+	<meta name="description" content="The open source web-based comic book reader that you need, but don't deserve."
+		  property="og:description">
+	<link href="style.css?608ce9cd7cfd13dfc332" rel="stylesheet">
+</head>
+<body>
+<script type="text/javascript" src="bundle.js?608ce9cd7cfd13dfc332"></script>
+</body>
 <script>
 	window.addEventListener('DOMContentLoaded', (event) => {
 		const id = window.location.href.replace(/.*stream\/(\w+)/gm, `$1`)
@@ -29,7 +37,7 @@
 				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
 				nativeInputValueSetter.call(ele, currentPage)
 				// https://stackoverflow.com/questions/23892547/what-is-the-best-way-to-trigger-onchange-event-in-react-js
-				ele.dispatchEvent(new Event('input', { bubbles: true}))
+				ele.dispatchEvent(new Event('input', {bubbles: true}))
 				ele.dispatchEvent(new KeyboardEvent('keypress', {
 					code: 'Enter',
 					key: 'Enter',
@@ -38,6 +46,7 @@
 					view: window,
 					bubbles: true
 				}))
+				parent.postMessage("done", "*")
 			} else if (ele && temp !== ele.value) {
 				// update the current page
 				temp = ele.value;

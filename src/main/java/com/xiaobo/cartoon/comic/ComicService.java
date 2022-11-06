@@ -20,7 +20,7 @@ public class ComicService {
 	}
 
 	public List<Comic> findAll() {
-		return comicRepository.findAllByOrderByTitleAsc();
+		return comicRepository.findAllByOrderByCaptionAsc();
 	}
 
 	public void deleteById(String id) {
@@ -33,7 +33,7 @@ public class ComicService {
 	@Transactional
 	public Comic updateComic(String id, Comic comic) {
 		Comic save = comicRepository.findById(id).orElseThrow();
-		save.setTitle(comic.getTitle());
+		save.setCaption(comic.getCaption());
 		if (!save.getPath().equals(comic.getPath())) {
 
 			// delete all volume under this comic
