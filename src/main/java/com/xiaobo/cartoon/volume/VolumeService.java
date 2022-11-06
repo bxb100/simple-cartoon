@@ -3,6 +3,8 @@ package com.xiaobo.cartoon.volume;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,7 +93,7 @@ public class VolumeService {
 		log.info("{} {} {} {}", filename, fileType, fileSize, path);
 
 		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + filename)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename*=utf-8''" + encodeFileName(filename))
 				.contentLength(fileSize)
 				.contentType(MediaType.parseMediaType(fileType))
 				.body(outputStream -> {
@@ -99,5 +101,9 @@ public class VolumeService {
 						is.transferTo(outputStream);
 					}
 				});
+	}
+
+	private static String encodeFileName(String fileName) {
+		return URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
 	}
 }

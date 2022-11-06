@@ -19,20 +19,28 @@ public class ReplaceNameService {
 
 	private final VolumeRepository volumeRepository;
 
-
+	/**
+	 * Rule group:
+	 * 1. Pattern, replacement, effectIds
+	 * 2. IdMapName
+	 */
 	@Transactional
 	public Map<String, String> replaceVolumeName(
 			String comicId, ReplaceFileNameReq req, boolean forShow
 	) {
 		List<Volume> volumes = volumeRepository.findAllByComicId(new ObjectId(comicId));
-		Optional<Pattern> pattern = Optional.ofNullable(req.getPattern())
-				.map(Pattern::compile);
-		Map<String, String> idMapName = Optional.ofNullable(req.getIdMapName()).orElse(new HashMap<>());
+		Optional<Pattern> pattern = Optional.ofNullable(req.pattern()).map(Pattern::compile);
 
-		volumes.forEach(v -> pattern.ifPresent(p -> {
-			String newName = p.matcher(v.getFileName()).replaceAll(req.getReplacement());
-			idMapName.putIfAbsent(v.getId(), newName);
-		}));
+		Map<String, String> idMapName = Optional.ofNullable(req.idMapName()).orElse(new HashMap<>());
+
+		List<String> effectIds = Optional.ofNullable(req.effectIds()).orElse(volumes.stream().map(Volume::getId).toList());
+
+		volumes.stream()
+				.filter(v -> effectIds.contains(v.getId()))
+				.forEach(v -> pattern.ifPresent(p -> {
+					String newName = p.matcher(v.getFileName()).replaceAll(req.replacement());
+					idMapName.putIfAbsent(v.getId(), newName);
+				}));
 
 		if (!forShow) {
 			List<Volume> needSave = volumes.stream().filter(v -> idMapName.containsKey(v.getId()))
