@@ -1,4 +1,4 @@
-This project is [cartoon-ui](https://github.com/bxb100/cartoon-ui) backend part
+This project is [Cartoon UI](https://github.com/bxb100/cartoon-ui) backend part
 
 ## Docker compose
 
