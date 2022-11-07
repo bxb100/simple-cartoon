@@ -10,11 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import com.xiaobo.cartoon.comic.Comic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -96,6 +98,7 @@ public class VolumeService {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename*=utf-8''" + encodeFileName(filename))
 				.contentLength(fileSize)
 				.contentType(MediaType.parseMediaType(fileType))
+				.cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
 				.body(outputStream -> {
 					try (InputStream is = Files.newInputStream(path)) {
 						is.transferTo(outputStream);
