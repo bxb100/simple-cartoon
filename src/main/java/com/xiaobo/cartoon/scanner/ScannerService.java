@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.xiaobo.cartoon.volume.Volume.ORDER_RULE;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +50,8 @@ public class ScannerService {
 					// 2. get all satisfied files
 					.filter(Files::isRegularFile)
 					.filter(this::isCompressionFile)
-					.sorted(Comparator.comparing(Path::getFileName))
 					.map(path -> this.processVolumeByPath(comic.getId(), path))
+					.sorted(ORDER_RULE)
 					.toList();
 
 			// 3. persist into volume repo

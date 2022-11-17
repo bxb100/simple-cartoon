@@ -10,6 +10,8 @@ public interface VolumeRepository extends MongoRepository<Volume, String> {
 
 	List<Volume> findAllByComicId(ObjectId comicId);
 
+	Optional<Volume> findFirstByComicIdAndPreviousIdIsNull(ObjectId comicId);
+
 	Optional<Volume> findByPathAndComicId(String path, ObjectId comicId);
 
 	void deleteAllByComicId(ObjectId comicId);

@@ -1,5 +1,6 @@
 package com.xiaobo.cartoon.volume;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document
 public class Volume {
+
+	public static final Comparator<Volume> ORDER_RULE = Comparator.comparing(Volume::getFileName);
 
 	@Id
 	private String id;

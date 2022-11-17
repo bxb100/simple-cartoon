@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.xiaobo.cartoon.comic.Comic;
+import com.xiaobo.cartoon.comic.ComicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import static com.xiaobo.cartoon.volume.Volume.ORDER_RULE;
 
 @Slf4j
 @Service
@@ -29,11 +31,21 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class VolumeService {
 
 	private final VolumeRepository volumeRepository;
+	private final ComicRepository comicRepository;
 
+	private static String encodeFileName(String fileName) {
+		return URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
+	}
 
 	public List<Volume> findByComicId(String comicId) {
+		if (!ObjectId.isValid(comicId)) {
+			return List.of();
+		}
 
-		return volumeRepository.findAllByComicId(new ObjectId(comicId));
+		return volumeRepository.findAllByComicId(new ObjectId(comicId))
+				.stream()
+				.sorted(ORDER_RULE)
+				.toList();
 	}
 
 	public Volume getById(String id) {
@@ -42,7 +54,32 @@ public class VolumeService {
 
 	public void deleteById(String id) {
 
-		volumeRepository.deleteById(id);
+		volumeRepository.findById(id).ifPresent(volume -> {
+			// reset previous volume's nextId
+			Optional.ofNullable(volume.getPreviousId())
+					.flatMap(volumeRepository::findById)
+					.ifPresent(previous -> {
+						previous.setNextId(volume.getNextId());
+						volumeRepository.save(previous);
+					});
+
+			// reset next volume's previousId
+			Optional.ofNullable(volume.getNextId())
+					.flatMap(volumeRepository::findById)
+					.ifPresent(next -> {
+						next.setPreviousId(volume.getPreviousId());
+						volumeRepository.save(next);
+					});
+
+			volumeRepository.delete(volume);
+
+			// update comic's volume count
+			comicRepository.findById(volume.getComicId().toString()).ifPresent(comic -> {
+				comic.setVolNum(comic.getVolNum() - 1);
+				comicRepository.save(comic);
+			});
+
+		});
 	}
 
 	public void markRead(String id, Integer currentPage) {
@@ -56,18 +93,22 @@ public class VolumeService {
 
 	public List<Volume> associate(Comic comic, List<Volume> volumes) {
 
-		for (int i = 0; i < volumes.size(); i++) {
-			Volume volume = volumes.get(i);
+		List<Volume> saved = volumeRepository.saveAll(volumes);
+
+		for (int i = 0; i < saved.size(); i++) {
+			Volume volume = saved.get(i);
 			volume.setComicId(new ObjectId(comic.getId()));
+			volume.setPreviousId(null);
+			volume.setNextId(null);
 			if (i > 0) {
-				volume.setPreviousId(volumes.get(i - 1).getId());
+				volume.setPreviousId(saved.get(i - 1).getId());
 			}
-			if (i < volumes.size() - 1) {
-				volume.setNextId(volumes.get(i + 1).getId());
+			if (i < saved.size() - 1) {
+				volume.setNextId(saved.get(i + 1).getId());
 			}
 		}
 
-		return volumeRepository.saveAll(volumes);
+		return volumeRepository.saveAll(saved);
 	}
 
 	public void cleanUp(Comic comic, List<Volume> volumes) {
@@ -104,9 +145,5 @@ public class VolumeService {
 						is.transferTo(outputStream);
 					}
 				});
-	}
-
-	private static String encodeFileName(String fileName) {
-		return URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
 	}
 }
